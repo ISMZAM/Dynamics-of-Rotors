@@ -1,0 +1,267 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX Template: Project Titlepage Modified (v 0.1) by rcx
+%
+% Original Source: http://www.howtotex.com
+% Date: February 2014
+% 
+% This is a title page template which be used for articles & reports.
+% 
+% This is the modified version of the original Latex template from
+% aforementioned website.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+%\usepackage[a4paper]{geometry}
+\usepackage[left=1.5cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{graphicx, wrapfig, setspace, booktabs}
+\usepackage{titlepic}
+\usepackage[T1]{fontenc}
+\usepackage[font=small, labelfont=bf,center]{caption}
+\usepackage{fourier}
+\usepackage[protrusion=true, expansion=true]{microtype}
+\usepackage[english]{babel}
+\usepackage{sectsty}
+\usepackage{url, lipsum}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{subfig}
+\usepackage{tikz}
+\usepackage{svg}
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+\onehalfspacing
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+
+%-------------------------------------------------------------------------------
+% HEADER & FOOTER
+%-------------------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\setlength\headheight{15pt}
+\fancyhead[L]{iz16368}
+\fancyhead[R]{University of Bristol}
+\fancyfoot[R]{Page \thepage\ of \pageref{LastPage}}
+%-------------------------------------------------------------------------------
+% TITLE PAGE
+%-------------------------------------------------------------------------------
+
+\begin{document}
+
+\title{ \normalsize \textsc{Dynamics of Rotors}
+		\\ 		University of Bristol \\
+		Department of Aerospace Engineering\\ [0.5cm]
+		\HRule{0.5pt} \\
+		\LARGE \textbf{\uppercase{Modal Analysis of Rotor Blade Structure}}
+		\HRule{2pt} \\ [0.5cm]
+		\normalsize}
+\author{
+		Ismaeel Zaman  \\
+ }
+\maketitle
+
+%-------------------------------------------------------------------------------
+% Section title formatting
+%\sectionfont{\scshape}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+% BODY
+%-------------------------------------------------------------------------------
+
+\section{Executive Summary}
+%1/4 page brief description of activities, purpose, findings, conclusions
+\section{Introduction}
+%1/3 page  overall motivation, background, context, approach, procedures, aim and objectives
+
+\newpage
+
+\section{Experimental}
+%3-4 pages
+\subsection{Experimental Setup}
+%Purpose, specific research objectives, tasks, steps, procedures, …
+The aim of this experiment is to obtain practical experience and understanding of experimental modelling and modal analysis of a rotor blade structure and to obtain data which could be used to refine a computational model in the future.\\
+
+To achieve this aim the following objectives are set:
+\begin{itemize}
+    \item Determine natural frequencies in the selected frequency range for the range of configurations.
+    \item Determine damping ratio for the first mode 
+    \item Note the specifications of the test structure and conditions for later modelling.
+    \item Discuss experiment and findings
+\end{itemize}{}
+
+
+
+
+\subsection{Experimental Modal Analysis}
+%Blade structure, analysis method, inputs / outputs, test conditions and parameters, measured quantities, identified responses
+The experiment modelled a stationary blade that was impacted and the structural deflection recorded for different root boundary conditions. This formed the basis of a rudimentary impact based modal analysis. \\
+The translation data was collected and analysed using Discrete Fourier Transform and the Logarithmic Decrement method to obtain the natural frequencies and damping ratios for the different conditions.\\
+The apparatus consisted of an Aluminium beam with a hollow rectangular cross-section with specifications in Table ADDREF, clamped to a rigid structure through a steel link that determined the root boundary condition.\\
+For data measurement and acquisition a single channel \textit{Bruel\&Kjaer} piezoelectric accelerometer is fixed to the tip of the beam and is connected to a National Instruments NI 9234 signal analyser. This is linked to a Matlab program for data interpretation and storage. \\
+Figure \ref{fig:photo} shows an image of the setup.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{setupphoto.jpg}
+    \caption{Photo showing experiment setup including aluminium beam in its 90 deg rotated position, accelerometer and clamp}
+    \label{fig:photo}
+\end{figure}{}
+
+Initially, the beam was oriented so that the beam would deflect in a plane that was opposed by the clamp geometrically. The beam was deflected and released and the data recorded. The beam was then rotated 90 degrees about its span-wise axis and clamped tightly so that the restoring force produced comes from the friction between the clamp and the beam. The beam was deflected again and data recorded. The clamp was then loosened and the experiment repeated. \\
+
+The next stage involved adding tip masses to the beam and obtaining impact response data.
+The orientation of the beam was reverted to its original state and aluminium and steel tip masses of 10g and 30g respectively, were added separately as well as a case of no tip mass. The beam was impacted with a hard tipped hammer and the responses were recorded for each case.
+
+Similar to before, a Fourier transform was performed for modal frequency identification amd the logarithimic decrement method for damping values.
+
+Each case was repeated twice for consistency.
+
+
+\subsection{Results}
+%Parameter, condition, result tables; graphs of measured changes, trends, differences; absolute / relative
+
+The results for the modal frequencies and damping ratios for all cases can be seen in Table \ref{tab:1res}
+\begin{table}[H]
+\label{tab:1res}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor[HTML]{CBCEFB} 
+\cellcolor[HTML]{CBCEFB}                       & \cellcolor[HTML]{CBCEFB}                                         & \multicolumn{3}{c|}{\cellcolor[HTML]{CBCEFB}Modal Frequencies (Hz)} \\ \cline{3-5} 
+\rowcolor[HTML]{CBCEFB} 
+\multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}Case} & \multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}Damping Ratio, $\zeta$} & F1                   & F2                   & F3                    \\ \hline
+Free Geo Clamped                               & 0.001566                                                         & 11.10                & 72.06                & 206.13                \\ \hline
+Free Friction Tight                            & 0.003950                                                         & 11.14                & 71.83                & 205.95                \\ \hline
+Free Friction Loose                            & 0.004142                                                         & 11.11                & 71.58                & 204.60                \\ \hline
+Impact Geo No Tip Mass                         & 0.001365
+                                                       & 11.16                & 72.09                & 206.42                \\ \hline
+Impact Geo 10g Tip Mass                        & 0.001341                                                         & 10.60                & 69.22                & 200.17                \\ \hline
+Impact Geo 30g Tip Mass                        & 0.001464                                                         & 9.71                 & 65.58                & 193.21                \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Discussion}
+%Experimental discussion, insights based on trends and effects, physical reasons, further use, …
+
+\section{Blade Modelling}
+%3-4 pages 
+\subsection{Blade Model}
+%Purpose (with ref. to section 1), specific research objectives, tasks, steps, procedures …
+\subsection{Computational Modal Analysis}
+%Blade model, assumptions, analysis method, conditions and parameters, solver, computed responses
+\subsection{Results}
+%Computed versus measured frequencies; absolute / relative frequency differences, trends; graphs and tables; frequency diagram and measured data, rotor harmonics, frequency separation …
+\subsection{Discussion}
+%Model-experiment errors, modelling insights based on error trends, frequency diagram discussion …
+
+
+\section{BVP Programming}
+%2pages
+\subsection{Programming A}
+%Purpose (with ref. to section 2), specific research objectives, tasks, steps, procedures …
+\subsection{Model Description}
+%Matlab BVP format; field equations, boundary conditions, assumptions, analysis method, …
+\subsection{Results}
+%Option A or option B: parametric studies shown in frequency diagram, mode shape plots, FRFs, 
+\subsection{Discussion}
+%Observed trends and interesting insights, parameter effects and influences, further exploitation, …
+
+\section{Summary}
+%Overall main findings, ways forward or possible follow up activities
+
+
+
+
+
+
+%-------------------------------------------------------------------------------
+% REFERENCES
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+% APPENDIX
+%-------------------------------------------------------------------------------
+\appendix
+%\addcontentsline{toc}{section}{APPENDIX}
+\renewcommand\thefigure{A.\arabic{figure}}  
+\setcounter{figure}{0}
+
+
+
+\end{document}
+
+
+
+
+%-------------------------------------------------------------------------------
+% SNIPPETS
+%-------------------------------------------------------------------------------
+
+% \begin{figure}[!ht]
+% 	\centering
+% 	\includegraphics[width=0.8\textwidth]{file_name}
+% 	\caption{}
+% 	\centering
+% 	\label{label:file_name}
+% \end{figure}
+
+%\begin{figure}[!ht]
+%	\centering
+%	\includegraphics[width=0.8\textwidth]{graph}
+%	\caption{Blood pressure ranges and associated level of hypertension (American Heart Association, 2013).}
+%	\centering
+%	\label{label:graph}
+%\end{figure}
+
+%\begin{wrapfigure}{r}{0.30\textwidth}
+%	\vspace{-40pt}
+%	\begin{center}
+%		\includegraphics[width=0.29\textwidth]{file_name}
+%	\end{center}
+%	\vspace{-20pt}
+%	\caption{}
+%	\label{label:file_name}
+%\end{wrapfigure}
+
+%\begin{wrapfigure}{r}{0.45\textwidth}
+%	\begin{center}
+%		\includegraphics[width=0.29\textwidth]{manometer}
+%	\end{center}
+%	\caption{Aneroid sphygmomanometer with stethoscope (Medicalexpo, 2012).}
+%	\label{label:manometer}
+%\end{wrapfigure}
+
+%\begin{table}[!ht]\footnotesize
+%	\centering
+%	\begin{tabular}{cccccc}
+%	\toprule
+%	\multicolumn{2}{c} {Pearson's correlation test} & \multicolumn{4}{c} {Independent t-test} \\
+%	\midrule	
+%	\multicolumn{2}{c} {Gender} & \multicolumn{2}{c} {Activity level} & \multicolumn{2}{c} {Gender} \\
+%	\midrule
+%	Males & Females & 1st level & 6th level & Males & Females \\
+%	\midrule
+%	\multicolumn{2}{c} {BMI vs. SP} & \multicolumn{2}{c} {Systolic pressure} & \multicolumn{2}{c} {Systolic Pressure} \\
+%	\multicolumn{2}{c} {BMI vs. DP} & \multicolumn{2}{c} {Diastolic pressure} & \multicolumn{2}{c} {Diastolic pressure} \\
+%	\multicolumn{2}{c} {BMI vs. MAP} & \multicolumn{2}{c} {MAP} & \multicolumn{2}{c} {MAP} \\
+%	\multicolumn{2}{c} {W:H ratio vs. SP} & \multicolumn{2}{c} {BMI} & \multicolumn{2}{c} {BMI} \\
+%	\multicolumn{2}{c} {W:H ratio vs. DP} & \multicolumn{2}{c} {W:H ratio} & \multicolumn{2}{c} {W:H ratio} \\
+%	\multicolumn{2}{c} {W:H ratio vs. MAP} & \multicolumn{2}{c} {\% Body fat} & \multicolumn{2}{c} {\% Body fat} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Height} & \multicolumn{2}{c} {Height} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Weight} & \multicolumn{2}{c} {Weight} \\
+%	\multicolumn{2}{c} {} & \multicolumn{2}{c} {Heart rate} & \multicolumn{2}{c} {Heart rate} \\
+%	\bottomrule
+%	\end{tabular}
+%	\caption{Parameters that were analysed and related statistical test performed for current study. BMI - body mass index; SP - systolic pressure; DP - diastolic pressure; MAP - mean arterial pressure; W:H ratio - waist to hip ratio.}
+%	\label{label:tests}
+%\end{table}
