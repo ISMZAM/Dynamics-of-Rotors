@@ -16,6 +16,7 @@
 \usepackage[left=1.5cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
 
 \usepackage[table,xcdraw]{xcolor}
+\definecolor{ocre}{RGB}{243,102,25}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{graphicx, wrapfig, setspace, booktabs}
@@ -34,12 +35,41 @@
 \usepackage{subfig}
 \usepackage{tikz}
 \usepackage{svg}
+\usepackage{filecontents}
+\begin{filecontents*}{batch_rotode_des_flp2_pclab_quad.m}
+   function dydx=fcn_ode(x,y,lambda)
+      % FIELD EQUATION: rotating flapping blade
+      z=y(1);                      % shape
+      u=y(2);                      % diff shape
+      v=y(3);                      % diff diff shape
+      w=y(4);                      % diff diff diff shape
+      EI=(168/L^2)*x^2-(336/L)*x+200;
+      EId=(336/L^2)*x-(336/L);
+      EIdd=(336/L^2);
+      Tx=0.5*m*(L^2-x^2);
+      Txd=m*x;
+      % model for bvp4c
+      dydx = [ ...
+         u ; ...
+         v ; ...
+         w ; ...                   % Euler-Bernoulli flapping model
+         (Omega^2*Tx*v+Omega^2*Txd*u+lambda*m*z-2*EId*w-EIdd*v)/(EI)];
+         %(lambda*m*z+Omega^2*((0.5*m*(R^2-x^2)+mtT*R)*v-m*x*u))/EIf];
+   end
+\end{filecontents*}
 
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[font={color=black},figurename=Fig.,labelfont={it}]{caption}
+
+\newcommand\ph\mlplaceholder
+
+\renewcommand{\lstlistingname}{Matlab Code}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
 \newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
 \onehalfspacing
 \setcounter{tocdepth}{5}
 \setcounter{secnumdepth}{5}
-
+\renewcommand{\baselinestretch}{1.5}
 %-------------------------------------------------------------------------------
 % HEADER & FOOTER
 %-------------------------------------------------------------------------------
@@ -83,11 +113,11 @@
 
 \newpage
 
-\section{Experimental}
+\section{Experimental Phase}
 %3-4 pages
 \subsection{Experimental Setup}
 %Purpose, specific research objectives, tasks, steps, procedures, …
-The aim of this experiment is to obtain practical experience and understanding of experimental modelling and modal analysis of a rotor blade structure and to obtain data which could be used to refine a computational model in the future.\\
+The aim of this experiment is to obtain practical experience and understanding of experimental modelling and modal analysis of a rotor blade structure and to obtain data which could be later used to refine a computational model.\\
 
 To achieve this aim the following objectives are set:
 \begin{itemize}
@@ -103,34 +133,48 @@ To achieve this aim the following objectives are set:
 \subsection{Experimental Modal Analysis}
 %Blade structure, analysis method, inputs / outputs, test conditions and parameters, measured quantities, identified responses
 The experiment modelled a stationary blade that was impacted and the structural deflection recorded for different root boundary conditions. This formed the basis of a rudimentary impact based modal analysis. \\
-The translation data was collected and analysed using Discrete Fourier Transform and the Logarithmic Decrement method to obtain the natural frequencies and damping ratios for the different conditions.\\
-The apparatus consisted of an Aluminium beam with a hollow rectangular cross-section with specifications in Table ADDREF, clamped to a rigid structure through a steel link that determined the root boundary condition.\\
+The displacement data was collected and analysed using Discrete Fourier Transform and the Logarithmic Decrement method to obtain the natural frequencies and damping ratios for the different conditions.\\
+The apparatus consisted of an Aluminium beam with a hollow rectangular cross-section with dimensions in Figure \ref{fig:dim}, clamped to a rigid structure through a steel link.\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{dimensions.PNG}
+    \caption{Dimensions of test structure}
+    \label{fig:dim}
+\end{figure}{}
 For data measurement and acquisition a single channel \textit{Bruel\&Kjaer} piezoelectric accelerometer is fixed to the tip of the beam and is connected to a National Instruments NI 9234 signal analyser. This is linked to a Matlab program for data interpretation and storage. \\
 Figure \ref{fig:photo} shows an image of the setup.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{setupphoto.jpg}
+    \includegraphics[width=0.9\textwidth]{photoedit.PNG}
     \caption{Photo showing experiment setup including aluminium beam in its 90 deg rotated position, accelerometer and clamp}
     \label{fig:photo}
 \end{figure}{}
 
-Initially, the beam was oriented so that the beam would deflect in a plane that was opposed by the clamp geometrically. The beam was deflected and released and the data recorded. The beam was then rotated 90 degrees about its span-wise axis and clamped tightly so that the restoring force produced comes from the friction between the clamp and the beam. The beam was deflected again and data recorded. The clamp was then loosened and the experiment repeated. \\
+Initially, the beam was oriented so that the beam would deflect in a plane that was opposed by the clamp geometrically. The beam was deflected and released and the data recorded. The beam was then rotated 90 degrees about its span-wise axis and clamped tightly so that the restoring force produced comes from the friction between the clamp and the beam. The beam was deflected again and data recorded. The clamp was then loosened slightly and the experiment repeated. \\
 
 The next stage involved adding tip masses to the beam and obtaining impact response data.
-The orientation of the beam was reverted to its original state and aluminium and steel tip masses of 10g and 30g respectively, were added separately as well as a case of no tip mass. The beam was impacted with a hard tipped hammer and the responses were recorded for each case.
+The orientation of the beam was reverted to its original state and aluminium and steel tip masses of 10g and 30g respectively, were added separately as well as a case of no tip mass. The masses were attached using Blu-Tack to the tip of the beam. The beam was impacted with a hard tipped hammer and the responses were recorded for each case.
 
-Similar to before, a Fourier transform was performed for modal frequency identification amd the logarithimic decrement method for damping values.
+Similar to before, a Fourier transform was performed for modal frequency identification and the logarithmic decrement method for damping values.
+Each case was repeated twice to reduce random error. Traditionally, this method of impact testing is performed in a controlled environment with force-measuring hammers to increase the accuracy and reliability of the data, this was not available here.
 
-Each case was repeated twice for consistency.
+From the Discrete Fourier Transform plot the modal frequencies were determined by selecting the data points at the obvious peaks. This method of impact testing is only accurate at relatively low frequencies due to the finite impulse duration which leads to the resulting excitation frequencies being limited, \cite{brano1}, so only the first three modes were taken.
 
+To obtain the damping ratio, the time history plots were analysed, the outputs were very at an extremely high resolution and contained many nested oscillations, Figure \ref{fig:TS}, which meant that the $findpeaks$ function had to to have the Minimum peak distance set at a value of 0.08. The logarithmic decrement formula, Equation \ref{eq:logdec}, was used to find the damping ratio.
+\begin{equation}
+    \zeta_{\text {exp }} \approx \frac{1}{2 \pi N} \ln \left(\frac{x\left(t_{1}\right)}{x\left(t_{1}+N T_{D}\right)}\right) \label{eq:logdec}
+\end{equation}{}
+However, it should be noted that the data behaves very erratically and will produce different results depending on input parameters of the analysis, the values and precision of the values in question are extremely fine and the reliability and validity of the experiment setup may not have been sufficient to allow a high degree of confidence. 
 
 \subsection{Results}
 %Parameter, condition, result tables; graphs of measured changes, trends, differences; absolute / relative
 
-The results for the modal frequencies and damping ratios for all cases can be seen in Table \ref{tab:1res}
+The results for the modal frequencies and damping ratios for all cases can be seen in Table \ref{tab:1res}. The damping ratios for the tip mass cases are not expected to vary but are shown here for completeness.
 \begin{table}[H]
-\label{tab:1res}
+
+\caption{Table showing characteristics for all cases. "Geo" denotes the original beam orientation, "Friction" denotes the rotated orientation.}
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -139,38 +183,145 @@ The results for the modal frequencies and damping ratios for all cases can be se
 \rowcolor[HTML]{CBCEFB} 
 \multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}Case} & \multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}Damping Ratio, $\zeta$} & F1                   & F2                   & F3                    \\ \hline
 Free Geo Clamped                               & 0.001566                                                         & 11.10                & 72.06                & 206.13                \\ \hline
-Free Friction Tight                            & 0.003950                                                         & 11.14                & 71.83                & 205.95                \\ \hline
-Free Friction Loose                            & 0.004142                                                         & 11.11                & 71.58                & 204.60                \\ \hline
+Free Friction Tight                            & 0.002904                                                        & 11.14                & 71.83                & 205.95                \\ \hline
+Free Friction Loose                            & 0.003900                                           & 11.11                & 71.58                & 204.60                \\ \hline
 Impact Geo No Tip Mass                         & 0.001365
                                                        & 11.16                & 72.09                & 206.42                \\ \hline
 Impact Geo 10g Tip Mass                        & 0.001341                                                         & 10.60                & 69.22                & 200.17                \\ \hline
 Impact Geo 30g Tip Mass                        & 0.001464                                                         & 9.71                 & 65.58                & 193.21                \\ \hline
 \end{tabular}
+\label{tab:1res}
 \end{table}
 
-
-
+\begin{figure}[H]
+    \centering
+    \subfloat[Full response showing damped oscillation]{{\includegraphics[width=0.44\textwidth]{TS1.eps}}}
+    \qquad
+    \subfloat[Enlarged section]{{\includegraphics[width=0.44\textwidth]{TS2.eps}}}
+    \caption{Time history plot of the "free friction tight" response}
+    \label{fig:TS}
+\end{figure}
 \subsection{Discussion}
 %Experimental discussion, insights based on trends and effects, physical reasons, further use, …
+
+From Table \ref{tab:1res}, it can be seen that the effect of rotating the beam so that the oscillation is opposed by friction that the damping ratio increases, this could be due to the micro-displacements at the root dissipating energy quicker. The damping ratio increases again when the clamp is loosened slightly, this could be due to the same reasons of larger root displacements causing larger energy dissipation and quicker damping.\\
+
+It is observed that the modal frequencies do not vary significantly during these changes and can be said to remain constant or reduce slightly.
+As the mass at the tip is increased, the natural frequencies of the modes reduce. This agrees with the theory, that as mass is added the natural frequencies reduce. It was also observed that the damping ratios did not vary significantly.\\
+The experiment relies on obtaining very sensitive and fine readings which would normally require a fully isolated system, however, in this case the experiment was performed in a busy environment where footsteps, other experiments, breathing could affect and interfere with the results. It should also be noted that the method for inducing vibration was done by hand and could not be confirmed to be consistent between tests. This could also be a contributing factor in introducing error.
 
 \section{Blade Modelling}
 %3-4 pages 
 \subsection{Blade Model}
 %Purpose (with ref. to section 1), specific research objectives, tasks, steps, procedures …
+From the results in Part 1 it was possible to refine a computational MATLAB model of a rotor blade structure to as close as possible match the response of the experiment.
+The aim of this section is to develop an understanding of the computational aspect of modal analysis with respect to a rotor blade structure.
+
+The objectives to be achieved are :
+
+\begin{itemize}
+    \item Use experimental results and specifications to refine and validate a MATLAB model.
+    \item Generate frequency diagrams for a range of flapping modes and rotor speeds
+    \item Analyse results and discuss findings
+\end{itemize}{}
+
 \subsection{Computational Modal Analysis}
 %Blade model, assumptions, analysis method, conditions and parameters, solver, computed responses
+The model assumes a cantilevered beam with a specified hinge offset. The stiffness and dimensions of the rotor (beam) are input parameters as well as the root stiffness, an equivalent torsional spring. The model can account for tip masses and output mode-shapes and modal frequencies for specific modes.\\
+The model uses the MATLAB function \textit{bvp4c} which is a Boundary Value Problem solver, it considers the field equations that describe the dynamic system and the boundary conditions to find a solution. It requires an initial guess and a normalisation condition.
+
+However, the main difficulty in modelling a cantilever beam as a hinged blade comes from the assumptions and boundary conditions used. The model assumes a beam with a specified hinge offset and a rotational stiffness at that hinge. This stiffness constitutes the main root boundary condition and care must be taken when estimating this value. The effective hinge offset plays a large role in the resulting physics of the problem and for a cantilever beam, methods such as using Southwell's coefficient from charts in \cite{charts} to estimate this value could be used. However, for this experiment there exists a natural "hinge" location as there is a large discontinuity in stiffness near the root contributed by the steel link. Therefore, this measured location of the transition between steel and aluminium was used as the position of the hinge. Leaving the root stiffness to be the variable that could be refined.\\ Another boundary condition is the mass at the tip, the experiment investigated cases where there was no tip mass, a 10g tip mass and a 30g tip mass. The model takes this into account and also smoothens the shear discontinuity introduced by a tip mass.
+
+The dimensions of the physical experimental setup can be seen in Figure \ref{fig:dim}, with the beam dimensions, $1003 \times 25.5 \times 12.7 mm$ and a wall thickness of $1.5 mm$. From this, and an estimate of $E=70GPa$ for Aluminium, it was possible to calculate the flapping stiffness of the beam $EI$. However, an additional parameter is required in the form of the root stiffness. This value was initially based on the stiffness of the steel link. The relationship was derived from equations from beam theory:
+\begin{align}
+    \theta&=\frac{Ml}{EI}\\
+    k&=\frac{M}{\theta}\\
+    \text{therefore}, k&=\frac{E_s I_s}{l_s}
+\end{align}{}
+where $M$ is the moment applied, $l$ is the length of the beam, $E$ is the Young's Modulus, $I$ is the second moment of area of the cross-section and $K$ is the beam stiffness.\\
+The steel link had dimensions of $24.5 \times 22.2 \times 4.9 mm$, A Young's Modulus for steel was estimated to be $210GPa$ and thus the $E_s I_s$ was calculated, giving $k=1.866e+03$. This value was used as a starting point was iterated to empirically obtain results that more closely match the experimental results. Using a value of $60\%$ of the initial $k$ produced results that had large agreement as can be seen in Table \ref{tab:lab2res}.\\
+A plot was generated that shows the flapping frequencies of the first six modes as they vary with rotor speed, from $0$ to $1800 rpm$. This can be seen in Figure \ref{fig:freqdiag}. Additionally, the relative frequency margin between each harmonic mode  and the rotor natural frequency was plotted at a rotor rpm of $568$, which is close to a standard rotor speed. This plot can be seen in Figure \ref{fig:reldiff}. Curve fitting was attempted to determine the trend.
+
 \subsection{Results}
 %Computed versus measured frequencies; absolute / relative frequency differences, trends; graphs and tables; frequency diagram and measured data, rotor harmonics, frequency separation …
+
+\begin{table}[H]
+\centering
+\caption{Table showing modal frequencies results of computational model and comparison with experimental values.}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor[HTML]{CBCEFB} 
+\cellcolor[HTML]{CBCEFB}                       & \cellcolor[HTML]{CBCEFB}                                                                                                 & \multicolumn{2}{c|}{\cellcolor[HTML]{CBCEFB}Inital $k$ estimate}                                                                              & \multicolumn{2}{c|}{\cellcolor[HTML]{CBCEFB}Refined $k$ estimate}                                                                                \\ \cline{3-6} 
+\rowcolor[HTML]{CBCEFB} 
+\multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}Case} & \multirow{-2}{*}{\cellcolor[HTML]{CBCEFB}\begin{tabular}[c]{@{}c@{}}Experimental \\ Modal Frequency\\ (Hz)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Model Modal \\ Frequency (Hz)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage \\ Difference (\%)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Model Modal\\  Frequency\\  (Hz)\end{tabular} & \begin{tabular}[c]{@{}c@{}}Percentage\\  Difference (\%)\end{tabular} \\ \hline
+\rowcolor[HTML]{C0C0C0} 
+No Tip Mass                                    &                                                                                                                          &                                                                       &                                                                       &                                                                          &                                                                       \\ \hline
+F1                                             & 11.1                                                                                                                     & 12.14                                                                 & \cellcolor[HTML]{FFFC9E}9.37                                                                  & 11.15                                                                    & \cellcolor[HTML]{FFFC9E}0.45                                                                  \\ \hline
+F2                                             & 72.06                                                                                                                    & 78.9                                                                  & \cellcolor[HTML]{FFFC9E}9.49                                                                  & 75.49                                                                    &\cellcolor[HTML]{FFFC9E} 4.76                                                                  \\ \hline
+F3                                             & 206.13                                                                                                                   & 225.96                                                                & \cellcolor[HTML]{FFFC9E}9.62                                                                  & 219.9                                                                    & \cellcolor[HTML]{FFFC9E}6.68                                                                  \\ \hline
+\rowcolor[HTML]{C0C0C0} 
+10.0g Tip Mass                    &                                                                                                                          &                                                                       &                                                                       &                                                                          &                                                                       \\ \hline
+F1                                             & 10.59                                                                                                                    & 11.37                                                                 & \cellcolor[HTML]{FFFC9E}7.37                                                                  & 10.47                                                                    & \cellcolor[HTML]{FFFC9E}-1.13                                                                 \\ \hline
+F2                                             & 69.23                                                                                                                    & 74.34                                                                 & \cellcolor[HTML]{FFFC9E}7.38                                                                  & 71.09                                                                    &\cellcolor[HTML]{FFFC9E} 2.69                                                                  \\ \hline
+F3                                             & 200.17                                                                                                                   & 213.8                                                                 & \cellcolor[HTML]{FFFC9E}6.81                                                                  & 208.01                                                                   & \cellcolor[HTML]{FFFC9E}3.92                                                                  \\ \hline
+\rowcolor[HTML]{C0C0C0} 
+30.0g Tip Mass                         &                                                                                                                          &                                                                       &                                                                       &                                                                          &                                                                       \\ \hline
+F1                                             & 9.7                                                                                                                      & 10.19                                                                 & \cellcolor[HTML]{FFFC9E}5.05                                                                  & 9.4085                                                                   &\cellcolor[HTML]{FFFC9E} -3.01                                                                 \\ \hline
+F2                                             & 65.58                                                                                                                    & 68.9                                                                  & \cellcolor[HTML]{FFFC9E}5.06                                                                  & 65.847                                                                   &\cellcolor[HTML]{FFFC9E} 0.41                                                                  \\ \hline
+F3                                             & 193.21                                                                                                                   & 202.19                                                                & \cellcolor[HTML]{FFFC9E}4.65                                                                  & 196.59                                                                   &\cellcolor[HTML]{FFFC9E} 1.75                                                                  \\ \hline
+\end{tabular}
+\label{tab:lab2res}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\label{fig:freqdiag} Diagram showing how the first six modal frequencies vary with rotor speed]{{\includegraphics[width=0.45\textwidth]{FREQDIAG.eps}}}
+    \qquad
+    \subfloat[\label{fig:reldiff}Plot of the frequency margins for each harmonic, from the natural rotor frequency, with fitted curve]{{\includegraphics[width=0.45\textwidth]{RelDiff.eps}}}
+    \caption{Frequency diagram and relative difference plots of the first six harmonics} (no tip mass)
+\end{figure}
 \subsection{Discussion}
 %Model-experiment errors, modelling insights based on error trends, frequency diagram discussion …
+From the results in Table \ref{tab:lab2res}, it can be seen that the initial estimate for root stiffness $k$ produced results that differed from experimental results by a maximum of $9.62\%$. It was observed that this initial value over estimated the natural frequencies so to provide lower results the $k$ value was decreased. The refined $k$ results differed from the experimental values by a maximum of $6.68\%$. It was observed that the error in the results increased as the mode number increased, suggesting that the mode was less accurate at higher frequencies. This trend was not observed for the $30.0g$ tip mass case however, the error increased, but the absolute value of the error did not. With the model largely underestimating the first harmonic.\\ An additional trend was also observed, that the error of each respective harmonic increased negatively as the tip mass increased. This could be attributed the the hinge offset not being a true equivalent to the experiment setup or the fact that the Young's Modulus of the materials were estimated rather than determined.\\
+
+From Figure \ref{fig:freqdiag}, it can be seen that as the rotor speed increases so do the modal frequencies. It is important that the modal frequencies do not intersect the natural frequency of the rotor otherwise resonance may occur and contributed to rapid unplanned disassembly of the rotor system. While the modal frequencies do not intersect the natural rotor frequency the first mode does come within $3Hz$, which is not ideal. The frequency margin of the modes from the rotor frequency was plotted in Figure \ref{fig:reldiff} and it was found the the trend fit a quadratic curve perfectly. 
+
+To increase the margin the modal frequencies should be raised higher this could be done by increasing the root stiffness or decreasing the mass of the blade. Other methods could be to reduce the modal frequencies such that they never cross the 1R line upwards in the first place. However, for this case that would require large modifications.
+
+
+
+
+
 
 
 \section{BVP Programming}
 %2pages
-\subsection{Programming A}
+\subsection{Programming Option: A}
 %Purpose (with ref. to section 2), specific research objectives, tasks, steps, procedures …
+The MATLAB model has been improved and validated in the previous section. This section will now investigate the Boundary Value Problem method, specifically with regards to the $bvp4c$ solver that is used in the model.\\
+The aim of this part is to demonstrate the theoretical and computational sides of the BVP method for elastic blades. The objectives for this part are:
+
+\begin{itemize}
+    \item Implement the variable stiffness blade problem in MATLAB using the $bvp4c$ format.
+    \item Analyse the result of different stiffness distribution orders.
+    \item Discuss findings
+\end{itemize}
+
 \subsection{Model Description}
 %Matlab BVP format; field equations, boundary conditions, assumptions, analysis method, …
+$bvp4c$ is a MATLAB BVP solver based on the collocation method, which is a version of Method of Weighted Residuals, \cite{bvp}. It finds unique solutions to ODEs with boundary values rather than initial values. It does this using the ODE field equation, the boundary conditions, a normalising factor to identify unique solutions and an initial guess.\\
+The task required a change in the field equation to take into account a varying $EI$ along the span. 
+The field equations need to be written as a set of $1^{st}$ Order ODEs, where terms of a higher order are substituted for an independent variable which is defined earlier.
+The solver requires the field equation to be defined by $w^{iv}$ and so for a variable $EI$ the result is Equation \ref{eq:field}.
+
+\begin{equation}
+    w^{iv}=\frac{\lambda \,m\,w-2\,\mathrm{EI^{'}}\,w^{'''}-\mathrm{EI^{''}}\,w^{''}+\Omega ^2\,\mathrm{Tx^{'}}\,w^{'}+\Omega ^2\,\mathrm{Tx}\,w^{''}}{\mathrm{EI}} \label{eq:field}
+\end{equation}{}
+
+\lstinputlisting[style=Matlab-editor,basicstyle=\lstconsolas,caption=Implementation of Field Equation,linerange={13-17}]{batch_rotode_des_flp2_pclab_quad.m}
+
+
+The stiffness distribution was modelled as a constant, a linear distribution and a quadratic disribution
 \subsection{Results}
 %Option A or option B: parametric studies shown in frequency diagram, mode shape plots, FRFs, 
 \subsection{Discussion}
@@ -187,7 +338,11 @@ Impact Geo 30g Tip Mass                        & 0.001464                       
 %-------------------------------------------------------------------------------
 % REFERENCES
 %-------------------------------------------------------------------------------
-
+\begin{thebibliography}{}
+\bibitem{charts}R. Yntema, Simplified procedures and charts for the rapid estimation of bending frequencies of rotating beams. Washington, D.C.: National Advisory Committee for Aeronautics, 1955.
+\bibitem{brano1}B. Titurus, Dynamics of Rotors - Experimental Blade Modal Analysis. Bristol, UK. : University of Bristol, 2019
+\bibitem{bvp}J. Kierzenka and L. Shampine, "A BVP solver based on residual control and the Maltab PSE", ACM Transactions on Mathematical Software, vol. 27, no. 3, pp. 299-316, 2001. Available: 10.1145/502800.502801 [Accessed 21 November 2019].
+\end{thebibliography}{}
 %-------------------------------------------------------------------------------
 % APPENDIX
 %-------------------------------------------------------------------------------
